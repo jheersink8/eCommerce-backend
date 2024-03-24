@@ -10,7 +10,8 @@ router.get('/', async (req, res) => {
   // DEV UPDATE: Added async/await to route
   try {
     const productData = await Product.findAll({
-      include: [{ model: Category }, { model: Tag }]
+      include: [{ model: Category }, { model: Tag }],
+      order: [['id', 'ASC']]
     });
     res.status(200).json(productData);
   } catch (err) {
@@ -39,7 +40,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // create new product
-router.post('/', async (req, res) => {
+router.post('/',  (req, res) => {
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -48,12 +49,6 @@ router.post('/', async (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
-  // DEV UPDATE: Added async/await to route
-  try {
-    const productData = await Product.create(req.body);
-    res.status(200).json(productData);
-  } catch (err) {
-
     Product.create(req.body)
       .then((product) => {
         // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -75,7 +70,7 @@ router.post('/', async (req, res) => {
         res.status(400).json(err);
       });
   }
-});
+);
 
 // update product
 router.put('/:id', (req, res) => {
